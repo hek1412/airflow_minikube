@@ -3,7 +3,7 @@ from airflow.operators.python import PythonOperator
 from airflow.operators.dummy import DummyOperator
 from datetime import datetime
 
-def generate_and_print_pascals_triangle(n):
+def print_pascals_triangle(n):
     triangle = []
     for row_num in range(n):
         row = [1] * (row_num + 1)

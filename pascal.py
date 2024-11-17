@@ -3,26 +3,18 @@ from airflow.operators.python import PythonOperator
 from airflow.operators.dummy import DummyOperator
 from datetime import datetime
 
-def generate_pascals_triangle(n):
+def generate_and_print_pascals_triangle(n):
     triangle = []
     for row_num in range(n):
-        # Начинаем каждую строку с 1
         row = [1] * (row_num + 1)
-        # Заполняем значения строки, кроме первого и последнего
         for j in range(1, row_num):
             row[j] = triangle[row_num - 1][j - 1] + triangle[row_num - 1][j]
         triangle.append(row)
-    return triangle
-
-def print_pascals_triangle(triangle):
+    
     max_width = len(" ".join(map(str, triangle[-1])))
     for row in triangle:
         row_str = " ".join(map(str, row))
         print(row_str.center(max_width))
-# Количество уровней треугольника Паскаля
-levels = 10
-triangle = generate_pascals_triangle(levels)
-print_pascals_triangle(triangle)
 
 default_args = {
     'owner': 'airflow',
@@ -47,6 +39,7 @@ end = DummyOperator(
 python_task = PythonOperator(
     task_id='print_pascals_triangle',
     python_callable=print_pascals_triangle,
+    op_args=[10],
     dag=dag,
 )
 

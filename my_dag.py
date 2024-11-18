@@ -5,17 +5,26 @@ from datetime import datetime, timedelta
 import subprocess
 
 # Определяем Python-функцию, которую будем вызывать предназначена для получения и отображения времени безотказной работы системы (uptime)
+# def print_uptime():
+#     try:
+#         result = subprocess.run(['uptime', '-p'], capture_output=True, text=True)
+#         uptime = result.stdout.strip()
+#         # Форматирование
+#         formatted_uptime = '. '.join(uptime.split(', '))
+#         print(f"\nТекущее время безотказной работы составляет:\n... {formatted_uptime} ...\n")
+        
+#     except Exception as e:
+#         print(f"Ошибка: {str(e)}")
 def print_uptime():
     try:
-        result = subprocess.run(['uptime', '-p'], capture_output=True, text=True)
-        uptime = result.stdout.strip()
-        # Форматирование
-        formatted_uptime = '. '.join(uptime.split(', '))
-        print(f"\nТекущее время безотказной работы составляет:\n... {formatted_uptime} ...\n")
+        with open('/proc/uptime', 'r') as f:
+            uptime_seconds = float(f.readline().split()[0])
+            uptime_minutes = int(uptime_seconds / 60)
+            formatted_uptime = f"{uptime_minutes} минут"  # Можно добавить более сложное форматирование
+            print(f"\nТекущее время безотказной работы составляет:\n... {formatted_uptime} ...\n")
         
     except Exception as e:
         print(f"Ошибка: {str(e)}")
-
 # Задаем параметры DAG
 default_args = {
     'owner': 'airflow',

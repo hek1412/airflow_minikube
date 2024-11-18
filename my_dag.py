@@ -3,15 +3,25 @@ from airflow.operators.bash import BashOperator
 from airflow.operators.python import PythonOperator
 from datetime import datetime, timedelta
 import subprocess
+from tabulate import tabulate
 
 # Определяем Python-функцию, которую будем вызывать предназначена для получения и отображения времени безотказной работы системы (uptime)
 def print_uptime():
     try:
         result = subprocess.run(['uptime', '-p'], capture_output=True, text=True)
         uptime = result.stdout.strip()
-        print(f"Текущее время безотказной работы составляет {uptime}")
+        
+        # Подготовка данных для табличного представления
+        headers = ["Описание", "Время"]
+        table = [["Текущее время безотказной работы", uptime]]
+        
+        # Форматирование данных в виде таблицы
+        print(tabulate(table, headers, tablefmt="rounded_grid"))
     except Exception as e:
         print(f"Ошибка: {str(e)}")
+
+# Вызов функции
+# print_uptime()
 
 # Задаем параметры DAG
 default_args = {
